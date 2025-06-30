@@ -99,11 +99,31 @@ This will:
 - Apply sentence-aware chunking
 - Print the first few chunks and chunk count
 
+### Run Embedding Test
+
+To test the embedding generation, run the `test_embedder.py` script found inside `tests/`. This script uses the Hugging Face `sentence-transformers/all-MiniLM-L6-v2` model.
+
+**Important:**  
+The Hugging Face caching system tries to use symbolic links ("symlinks") on your disk to save space when storing model files. On Windows, creating symlinks requires either running Python with administrator rights or enabling Developer Mode.  
+- If these are not set, the cache system will fall back to copying files instead of symlinking, which raises a warning and may use more disk space.  
+- This warning can be safely ignored, but you can avoid it by running your terminal or VSCode as administrator or enabling Developer Mode in Windows settings.
+
+The model and related tokenizer/config files are downloaded only once and cached locally (usually under `C:\Users\<username>\.cache\huggingface\hub`), so subsequent runs load from cache and do not download again.
+
+### Run Full Pipeline Test
+
+The script `test_pipeline.py` tests the **entire pipeline** from PDF loading → text chunking → embedding generation.
+
+This helps verify that all core components work well together and that model dependencies are downloaded and cached correctly.
+
+```bash
+python test_pipeline.py
+```
 ---
 
 ## 🔮 Coming Next
 
-- Embedding logic using OpenAI + FAISS
+- Using FAISS for efficient similarity search
 - LangChain vs alternative framework implementation
 - Streamlit / web UI integration
 - Model evaluation metrics
