@@ -1,6 +1,7 @@
 from langchain_app.utils import load_all_pdfs_from_folder, chunk_text
-from langchain_app.embedding_utils import embed_chunks
+from langchain_app.embedding_utils import load_embedding_model, embed_chunks
 
+model = load_embedding_model()
 folder = "docs"
 texts = load_all_pdfs_from_folder(folder)
 

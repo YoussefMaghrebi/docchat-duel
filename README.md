@@ -43,12 +43,17 @@ pip install -r requirements.txt
 ```
 docchat-duel/
 ├── langchain_app/
-│   └── utils.py               # PDF loading + chunking logic
+│   └── embedding_utils.py      # Loading embedding model + Vector embedding logic
+│   └── utils.py                # PDF loading + chunking logic
+│   └── search_utils.py         # Vector search logic
 ├── tests/
-│   └── test_chunker.py        # Chunking test with sample PDFs
-│   └── test_pdf_parser.py     # PDF parsing test with sample PDFs
+│   └── test_chunker.py         # Chunking test with sample PDFs
+│   └── test_embedder.py        # Vector embedding test with sample chunks list
+│   └── test_pdf_parser.py      # PDF parsing test with sample PDFs
+│   └── test_pipeline.py        # Full pipeline test with sample PDFs
+│   └── test_vector_search.py   # Vector search test using FAISS 
 ├── docs/
-│   └── *.pdf                  # Add your test PDFs here
+│   └── *.pdf                   # Add your test PDFs here
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -69,11 +74,11 @@ If you run the chunking test (`python tests/test_chunker.py`) for the first time
 If the download is successful, the chunking will work correctly without errors.
 Note: The file test_chunker.py must be run from the project root folder.
 
-## Running Tests
+## 🧪 Running Tests
 
 All the following test scripts must be run **from the project root** folder to ensure proper imports.
 
-### 📄 PDF Parser Test
+### PDF Parser Test
 
 The `test_pdf_parser.py` script in the `tests/` folder is designed to verify the PDF text extraction logic.  
 
@@ -86,7 +91,7 @@ Run the test script as so:
 python test_pdf_parser.py
 ```
 
-### 🧪 Run the Chunking Test
+### Run the Chunking Test
 
 To verify the tokenizer is working fine, run the file `test_chunker.py` found in the `tests/` directory:
 
@@ -119,11 +124,24 @@ This helps verify that all core components work well together and that model dep
 ```bash
 python test_pipeline.py
 ```
+
+### Run the Vector Search Test
+
+The `test_vector_search.py` script in the `tests/` folder is designed to verify the vector search logic.  
+
+- Chunks and embeds a sample text paragraph.
+- Performs vector search based on a sample query and retrieves most relevant chunks.
+
+Run the test script as so:
+
+```bash
+python test_vector_search.py
+```
+
 ---
 
 ## 🔮 Coming Next
 
-- Using FAISS for efficient similarity search
 - LangChain vs alternative framework implementation
 - Streamlit / web UI integration
 - Model evaluation metrics

@@ -1,9 +1,12 @@
 from sentence_transformers import SentenceTransformer
 
-# Load the model globally so it's not reloaded on each call
-model = SentenceTransformer("all-MiniLM-L6-v2")
+def load_embedding_model():
+    """
+    Returns: Embedding model instance
+    """
+    return SentenceTransformer("all-MiniLM-L6-v2")
 
-def embed_chunks(chunks):
+def embed_chunks(chunks, model):
     """
     Generate embeddings for a list of text chunks.
 
