@@ -50,7 +50,8 @@ docchat-duel/
 │   └── test_chunker.py         # Chunking test with sample PDFs
 │   └── test_embedder.py        # Vector embedding test with sample chunks list
 │   └── test_pdf_parser.py      # PDF parsing test with sample PDFs
-│   └── test_pipeline.py        # Full pipeline test with sample PDFs
+│   └── test_pipeline.py        # Text embedding pipeline test with sample PDFs
+│   └── test_rag.py             # Full pipeline test from PDF parsing to user query answering using RAG
 │   └── test_vector_search.py   # Vector search test using FAISS 
 ├── docs/
 │   └── *.pdf                   # Add your test PDFs here
@@ -78,7 +79,7 @@ Note: The file test_chunker.py must be run from the project root folder.
 
 All the following test scripts must be run **from the project root** folder to ensure proper imports.
 
-### PDF Parser Test
+### ✅ Run PDF Parser Test
 
 The `test_pdf_parser.py` script in the `tests/` folder is designed to verify the PDF text extraction logic.  
 
@@ -91,7 +92,7 @@ Run the test script as so:
 python test_pdf_parser.py
 ```
 
-### Run the Chunking Test
+### ✅ Run the Chunking Test
 
 To verify the tokenizer is working fine, run the file `test_chunker.py` found in the `tests/` directory:
 
@@ -104,7 +105,7 @@ This will:
 - Apply sentence-aware chunking
 - Print the first few chunks and chunk count
 
-### Run Embedding Test
+### ✅ Run Embedding Test
 
 To test the embedding generation, run the `test_embedder.py` script found inside `tests/`. This script uses the Hugging Face `sentence-transformers/all-MiniLM-L6-v2` model.
 
@@ -115,9 +116,9 @@ The Hugging Face caching system tries to use symbolic links ("symlinks") on your
 
 The model and related tokenizer/config files are downloaded only once and cached locally (usually under `C:\Users\<username>\.cache\huggingface\hub`), so subsequent runs load from cache and do not download again.
 
-### Run Full Pipeline Test
+### ✅ Run Text Embedding Pipeline Test
 
-The script `test_pipeline.py` tests the **entire pipeline** from PDF loading → text chunking → embedding generation.
+The script `test_pipeline.py` tests the **text embedding pipeline** from PDF loading → text chunking → embedding generation.
 
 This helps verify that all core components work well together and that model dependencies are downloaded and cached correctly.
 
@@ -125,7 +126,7 @@ This helps verify that all core components work well together and that model dep
 python test_pipeline.py
 ```
 
-### Run the Vector Search Test
+### ✅ Run the Vector Search Test
 
 The `test_vector_search.py` script in the `tests/` folder is designed to verify the vector search logic.  
 
@@ -137,6 +138,27 @@ Run the test script as so:
 ```bash
 python test_vector_search.py
 ```
+
+Here’s the `README.md` section you can add:
+
+---
+
+### ✅ Run the RAG Test
+
+The script `test_rag.py` demonstrates the full pipeline for **Retrieval-Augmented Generation (RAG)**. It covers all backend logic needed to:
+
+* Load and chunk user PDF documents
+* Embed the chunks into vector representations
+* Perform semantic vector search to retrieve relevant chunks
+* Use a local LLM (e.g., Falcon) to generate a final answer based on the retrieved context
+
+You can run it from the root of the project:
+
+```bash
+python test_rag.py
+```
+
+> 📌 **Note:** The first time you run this script, it will automatically download the model weights (`pytorch_model.bin`) for the selected Hugging Face LLM (e.g., `tiiuae/falcon-rw-1b`). This download will be cached locally for future runs.
 
 ---
 

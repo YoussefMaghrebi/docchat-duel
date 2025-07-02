@@ -2,3 +2,4 @@ pymupdf
 nltk
 sentence-transformers
 faiss-cpu
+accelerate

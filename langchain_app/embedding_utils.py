@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer
 
 def load_embedding_model():
     """
-    Returns: Embedding model instance
+    Returns: Embedding model instance.
     """
     return SentenceTransformer("all-MiniLM-L6-v2")
 

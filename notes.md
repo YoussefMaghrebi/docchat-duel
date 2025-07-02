@@ -63,7 +63,27 @@ Later:
 
 ---
 
-#### 5. **Support for LangChain or LlamaIndex**
+#### 5. ***Prompt Engineering & Token Limit Strategies***
+
+As we continue to improve the response quality of the RAG pipeline, one promising direction is advanced **prompt engineering**. The current prompt format is relatively generic and sometimes fails to guide the model to avoid repetition or follow specific answer formats. Future work may include:
+
+* Adding explicit **examples (few-shot prompts)** to guide the model toward desired answer structures.
+* Experimenting with **system-level instructions** (e.g., role-based prompts or constraints).
+* Dynamically adapting prompts based on query type (e.g., question, instruction, summarization).
+
+Another limitation arises from the **token capacity** of our current language model (`tiiuae/falcon-rw-1b`), which has a maximum sequence length of **1024 tokens**. This constraint affects both the prompt and the generated output. To work around this, we may explore:
+
+* **Summarizing or compressing context chunks** before injecting them into the prompt.
+* Using **hierarchical RAG**, where retrieved chunks are first summarized, then passed as distilled context.
+* **Chunk ranking and filtering**, selecting only the most informative sentences within a chunk.
+* Upgrading to models with larger token contexts (e.g., 2048+ tokens) when local resources allow.
+* Implementing **context window sliding** to split the full query context into multiple windows and aggregate their outputs.
+
+Token budget management and prompt design are both crucial levers for improving answer quality without needing to fine-tune or upscale the model. As such, both will be areas of active exploration in future iterations of the project.
+
+---
+
+#### 6. **Support for LangChain or LlamaIndex**
 
 If we want:
 
@@ -77,7 +97,7 @@ Then:
 
 ---
 
-#### 6. **UI Frontend Ideas**
+#### 7. **UI Frontend Ideas**
 
 * Upload documents
 * Show search hits as context

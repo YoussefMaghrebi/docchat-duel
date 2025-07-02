@@ -32,7 +32,7 @@ def search_faiss(query, embeddings, chunks, model, k=3):
     faiss.normalize_L2(query_embedding)                        # Normalize the query embedding vector using L2 Norm
 
     # Search
-    scores, indices = index.search(query_embedding, k)
+    scores, indices = index.search(query_embedding, k)         # returns scores and indices of most related chunks
     results = []
 
     for score, idx in zip(scores[0], indices[0]):
