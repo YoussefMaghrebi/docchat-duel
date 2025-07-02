@@ -146,6 +146,7 @@ Natural Language Processing is used for the following:
 5. Speech Recognition
 6. Speech Synthesis
 7. Speech Recognition
+8. Speech Recognition
 ...
 24. Speech
 ```
@@ -255,8 +256,8 @@ This configuration allows creative but not chaotic outputs and significantly red
 ## 🗺️ What's Next
 
 | Module            | Description                                    |
-|-------------------|------------------------------------------------|    |
-| 🔜 Frontend/API   | Optional UI to showcase Q&A from PDF input     |
+|-------------------|------------------------------------------------|    
+| 🔜 Frontend/API   | More UI features for a more user-friendly experience     |
 | 🔜 Framework Duel | Compare LangChain vs. another orchestrator     |
 
 ---
