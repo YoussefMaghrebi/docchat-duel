@@ -44,6 +44,7 @@ pip install -r requirements.txt
 docchat-duel/
 ├── langchain_app/
 │   └── embedding_utils.py      # Loading embedding model + Vector embedding logic
+│   └── llm_utils.py            # Loading LLM model + answer generation logic
 │   └── utils.py                # PDF loading + chunking logic
 │   └── search_utils.py         # Vector search logic
 ├── tests/
