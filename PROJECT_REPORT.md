@@ -101,122 +101,39 @@ While **Annoy** and **HNSWlib** are fast and simple, FAISS provides:
 
 ### 5.  **Retrieval-Augmented Generation (RAG)** 
 
-📂 **Component**: `generate_answer()` using **Falcon-RW-1B**  
+📂 **Component**: `generate_answer()` using **TinyLlama-1.1B-Chat-v1.0**  
 📌 **Purpose**: Pass the retrieved chunks to a Large Language Model (LLM) to generate a final answer
 
-#### ✅ Why We Chose Falcon-RW-1B
+#### ✅ Why We Chose TinyLlama-1.1B-Chat-v1.0
+
+Here’s an updated version of the section with **TinyLLaMA-1.1B-Chat-v1.0** added to the comparison table and incorporated into the narrative:
+
+---
+
+#### ✅ Why We Chose TinyLLaMA-1.1B-Chat-v1.0
 
 We evaluated several open-source language models for use in our RAG pipeline. Below is a comparison of key models that can be deployed locally without API costs:
 
-| Model                          | Size       | Instruction-Tuned | Hardware Requirements      | Inference Speed   | Strengths                                                 | Best Use Case                                   | Cons                                                                 |
-|-------------------------------|------------|-------------------|----------------------------|-------------------|-----------------------------------------------------------|------------------------------------------------|----------------------------------------------------------------------|
-| **Mistral-7B-Instruct**        | ~7B        | ✅                | 24GB+ GPU recommended      | Moderate          | High-quality instruction responses, rich language ability | Production-quality answers with strong hardware | Heavy model, slow inference on local machines                       |
-| **tiiuae/Falcon-RW-1B**        | ~1B        | ✅                | Low to Mid (4–6GB GPU)     | Very Fast         | Fast, lightweight, suitable for RAG prototyping           | Best tradeoff for local development & testing   | May produce shorter, simpler responses due to smaller capacity     |
-| **google/flan-t5-base**        | ~400M      | ✅                | Very Low (CPU-compatible)  | Extremely Fast    | Fast inference, excels in structured QA & summarization   | Low-resource environments & quick inference     | Seq2seq model: doesn't handle long context as effectively in RAG   |
+| Model                        | Size   | Instruction-Tuned | Hardware Requirements     | Inference Speed | Strengths                                                                 | Best Use Case                                           | Cons                                                                    |
+| ---------------------------- | ------ | ----------------- | ------------------------- | --------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Mistral-7B-Instruct**      | \~7B   | ✅                 | 24GB+ GPU recommended     | Moderate        | High-quality instruction responses, rich language ability                 | Production-quality answers with strong hardware         | Heavy model, slow inference on local machines                           |
+| **tiiuae/Falcon-RW-1B**      | \~1B   | ✅                 | Low to Mid (4–6GB GPU)    | Very Fast       | Fast, lightweight, suitable for RAG prototyping                           | Best tradeoff for local development & testing           | May produce shorter, simpler responses due to smaller capacity          |
+| **TinyLLaMA-1.1B-Chat-v1.0** | \~1.1B | ✅                 | Low (4–6GB GPU)           | Fast            | Strong performance for its size, instruction-tuned, high response quality | Lightweight production use, improved generation quality | Slightly slower than Falcon-RW-1B, smaller context window (2048 tokens) |
+| **google/flan-t5-base**      | \~400M | ✅                 | Very Low (CPU-compatible) | Extremely Fast  | Fast inference, excels in structured QA & summarization                   | Low-resource environments & quick inference             | Seq2seq model: doesn't handle long context as effectively in RAG        |
 
-We selected **Falcon-RW-1B** as the first model for integration because it offers the **best trade-off between performance, speed, and hardware requirements**. It is instruction-tuned, fast, Hugging Face-hosted (easy to integrate) and works well on modest GPUs or CPUs, making it ideal for:
+We initially selected **Falcon-RW-1B** due to its simplicity, speed, and ease of integration with low hardware requirements — making it ideal for testing the RAG pipeline end-to-end.
 
-- Prototyping our document question answering system.
-- Testing embeddings and vector search integration.
-- Ensuring everything works end-to-end before scaling up to larger models.
+However, as our evaluation progressed, we observed that **TinyLLaMA-1.1B-Chat-v1.0** consistently generated **more fluent, relevant, and complete answers**, especially when working with document-grounded QA tasks. Thanks to its instruction tuning and improved internal architecture, it has become our **preferred model for local inference** when quality is a priority, without incurring the memory and latency costs of much larger models.
+
+**TinyLLaMA now serves as our default choice for production-grade responses on consumer-grade GPUs.**
 
 Once the full system is validated, we can later upgrade to larger models like **Mistral-7B** for improved response quality.
 
 ### 6.  **Decoding Strategy Tuning**
 
-To improve the quality of responses generated by the LLM, we experimented with several decoding strategies by adjusting the `temperature`, `top_k`, and `top_p` sampling parameters during text generation. We observed how these settings impacted fluency, relevance, and repetition in the answers returned by our Retrieval-Augmented Generation (RAG) pipeline.
+To improve the quality of responses generated by the LLM, we experimented with several decoding strategies by adjusting the `temperature`, `max_tokens`, `top_k`, and `top_p` sampling parameters during text generation. We observed how these settings impacted fluency, relevance, and repetition in the answers returned by our Retrieval-Augmented Generation (RAG) pipeline.
 
-We also introduced a **post-processing step** that removes **near-duplicate lines** to address repetitive outputs — particularly useful when decoding was less controlled.
-
----
-
-#### 🔬 Experimental Comparisons
-
-##### **1. Deterministic Generation (No Sampling)**
-
-* **Settings**: `do_sample=False` (greedy decoding)
-* **Observation**: Severe repetition, especially of phrases like "Speech Recognition", despite some relevant items.
-
-```text
-Natural Language Processing is used for the following:
-1. Sentiment analysis
-2. Machine Translation
-3. Text Extraction
-4. Text Mining
-5. Speech Recognition
-6. Speech Synthesis
-7. Speech Recognition
-8. Speech Recognition
-...
-24. Speech
-```
-
-**✅ Pros**: Predictable output
-**❌ Cons**: Lots of repetition, limited diversity
-
----
-
-##### **2. Sampling Enabled (top\_k=50, top\_p=0.9, temperature=0.7)** ✅ *Best Fit*
-
-```text
-Natural Language Processing is used for a variety of applications, including:
-• Text extraction
-• Sentiment analysis
-• Speech recognition
-• Machine translation
-• Text summarization
-• Natural language processing is used to process natural language.
-5.
-```
-
-**✅ Pros**: Balanced diversity and fluency, no severe repetition
-**❌ Cons**: Occasional irrelevant or malformed items (e.g., "5.")
-
----
-
-##### **3. Slightly Lower Temperature (top\_k=50, top\_p=0.9, temperature=0.65)**
-
-```text
-• NLP is used for natural language processing. 
-• It is used to convert human language into machine-understandable form. 
-• It is used to analyze, understand, and process natural language. 
-• NLP is used in speech recognition, natural language processing, automatic translation, and more.
-...
-```
-
-**✅ Pros**: More structured
-**❌ Cons**: Redundant phrases ("used in natural language processing...")
-
----
-
-##### **4. Lower top\_p and temperature (top\_k=50, top\_p=0.85, temperature=0.6)**
-
-```text
-Natural language processing is used for a number of things. Some of these are:
-- Translating speech to text.
-- Translating text to speech.
-- Extracting information from text.
-- Searching for information in text.
-- Finding information in a document.
-- Finding information in a text.
-...
-```
-
-**✅ Pros**: More readable, task-oriented
-**❌ Cons**: Still suffers from phrase repetition ("Finding information in...")
-
----
-
-##### **5. Very Low Temperature (top\_k=50, top\_p=0.9, temperature=0.5)**
-
-```text
-Natural language processing is used for the extraction of information from text, speech, and other sources.
-It is used to extract information from text, speech, and other sources.
-...
-```
-
-**✅ Pros**: Consistent topic
-**❌ Cons**: Extreme redundancy and robotic tone
+We also introduced a **post-processing step** that removes **near-duplicate lines** to address repetitive outputs — particularly useful when decoding was set to greedy decoding.
 
 ---
 
@@ -231,6 +148,7 @@ In responses where repetition degraded the output quality, we implemented a **ne
 After empirical testing, the setting below provided the **most balanced result** in terms of fluency, specificity, and non-redundancy:
 
 ```python
+max_tokens = 170
 top_k = 50  
 top_p = 0.9  
 temperature = 0.7  

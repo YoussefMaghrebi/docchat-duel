@@ -1,8 +1,9 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import torch
 import difflib
+import os
 
-def load_llm_model(model_name = 'tiiuae/falcon-rw-1b'):
+def load_llm_model(model_name = 'TinyLlama/TinyLlama-1.1B-Chat-v1.0'):
     """
     Loads a pre-trained language model and its tokenizer.
 
@@ -17,15 +18,28 @@ def load_llm_model(model_name = 'tiiuae/falcon-rw-1b'):
     Notes:
         - Automatically uses GPU if available.
         - If memory is limited, weights are offloaded to disk (./offload).
-    """
-    
+    """   
+
+     # Convert model name to a safe folder name
+    safe_model_name = model_name.replace("/", "_")
+
+    offload_dir = os.path.join("./offload", safe_model_name)
+
+    if torch.cuda.is_available():
+        device_map = {"": 0}     # device set to GPU
+        print('using cuda for LLM model')
+        dtype = torch.float16
+    else:
+        device_map = "auto"      # "auto" uses the accelerate library, which manages how the model is split between CPU/GPU  
+        dtype = torch.float32
+
     model_name = model_name
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-        device_map="auto",          # "auto" uses the accelerate library, which manages how the model is split between CPU/GPU
-        offload_folder="./offload"  # folder to offload some model weights to disk when Hugging Face detects not enough GPU/CPU RAM
+        torch_dtype= dtype,
+        device_map= device_map,          
+        offload_folder= offload_dir  # folder to offload some model weights to disk when Hugging Face detects not enough GPU/CPU RAM
     )
     return tokenizer, model
 
@@ -54,7 +68,7 @@ def generate_prompt(chunk_texts, question):
     
     return prompt
 
-def generate_answer(chunk_texts, question, tokenizer, model, max_tokens=150, top_k=50, top_p=0.9, temperature=0.7, do_sample=True):
+def generate_answer(chunk_texts, question, tokenizer, model, max_tokens=170, top_k=50, top_p=0.9, temperature=0.7, do_sample=True):
     """
     Generates an answer from the language model using given context and question.
 

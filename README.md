@@ -151,7 +151,7 @@ The script `test_rag.py` demonstrates the full pipeline for **Retrieval-Augmente
 * Load and chunk user PDF documents
 * Embed the chunks into vector representations
 * Perform semantic vector search to retrieve relevant chunks
-* Use a local LLM (e.g., Falcon) to generate a final answer based on the retrieved context
+* Use a local LLM (e.g., TinyLlama) to generate a final answer based on the retrieved context
 
 You can run it from the root of the project:
 
@@ -159,7 +159,7 @@ You can run it from the root of the project:
 python test_rag.py
 ```
 
-> 📌 **Note:** The first time you run this script, it will automatically download the model weights (`pytorch_model.bin`) for the selected Hugging Face LLM (e.g., `tiiuae/falcon-rw-1b`). This download will be cached locally for future runs.
+> 📌 **Note:** The first time you run this script, it will automatically download the model weights (`pytorch_model.bin`) for the selected Hugging Face LLM (e.g., `TinyLlama/TinyLlama-1.1B-Chat-v1.0`). This download will be cached locally for future runs.
 
 ---
 ## 💬 LLM-based Q&A interface

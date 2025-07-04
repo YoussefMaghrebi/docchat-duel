@@ -54,7 +54,7 @@ def clean_chunk(text):
         cleaned.append(line)
     
     cleaned_text = "\n".join(cleaned)
-    return "\n".join(cleaned_text)
+    return cleaned_text
 
 
 st.set_page_config(page_title="DocChat Duel", layout="wide")
@@ -88,7 +88,8 @@ if uploaded_files:
     embeddings = embed_chunks(all_chunks, embedding_model)
 
     # load the LLM model 
-    model_id = "tiiuae/falcon-rw-1b"
+    #model_id = "tiiuae/falcon-rw-1b"
+    model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
     tokenizer, model = load_llm_model(model_name= model_id)
     st.info("The provided documents are processed ✅")
 

@@ -71,7 +71,7 @@ As we continue to improve the response quality of the RAG pipeline, one promisin
 * Experimenting with **system-level instructions** (e.g., role-based prompts or constraints).
 * Dynamically adapting prompts based on query type (e.g., question, instruction, summarization).
 
-Another limitation arises from the **token capacity** of our current language model (`tiiuae/falcon-rw-1b`), which has a maximum sequence length of **1024 tokens**. This constraint affects both the prompt and the generated output. To work around this, we may explore:
+Another limitation arises from the **token capacity** of our current language model (`TinyLlama/TinyLlama-1.1B-Chat-v1.0`), which has a maximum sequence length of **2048 tokens**. This constraint affects both the prompt and the generated output. To work around this, we may explore:
 
 * **Summarizing or compressing context chunks** before injecting them into the prompt.
 * Using **hierarchical RAG**, where retrieved chunks are first summarized, then passed as distilled context.
